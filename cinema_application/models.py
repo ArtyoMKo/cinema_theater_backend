@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
-from cinema_application.database import Base
+from cinema_application.database import Base, relationship
 
 
 class Admin(Base):
@@ -26,7 +26,7 @@ class Room(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)
     seats = Column(Integer)
-    # sessions = relationship("MovieSession", back_populates="movie_sessions")
+    movie_sessions = relationship("MovieSession", back_populates="room")
 
     def update(self, **kwargs):
         for field, value in kwargs.items():
@@ -42,8 +42,9 @@ class MovieSession(Base):
     end_time = Column(DateTime)
     movie_id = Column(Integer, ForeignKey("movies.id"))
     room_id = Column(Integer, ForeignKey("rooms.id"))
-    # room = relationship("Room", back_populates="movie_sessions")
-    # movie = relationship("Movie", back_populates="movie_sessions")
+    room = relationship("Room", back_populates="movie_sessions")
+    movie = relationship("Movie", back_populates="movie_sessions")
+    # reservations = relationship("Reservation", back_populates="reservations")
 
     def update(self, **kwargs):
         for field, value in kwargs.items():
@@ -57,7 +58,7 @@ class Movie(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)
     duration = Column(Integer)
-    # movie_sessions = relationship("MovieSession", back_populates="movies")
+    movie_sessions = relationship("MovieSession", back_populates="movie")
 
     def update(self, **kwargs):
         for field, value in kwargs.items():
@@ -65,20 +66,20 @@ class Movie(Base):
                 setattr(self, field, value)
 
 
-class Reservation(Base):
-    __tablename__ = (
-        "reservations"  # For help sqlalchemy to know what is the name of table later on
-    )
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    priority = Column(Integer, nullable=False)
-    complete = Column(Boolean, default=False)
-    session_id = Column(Integer, ForeignKey("movie_sessions.id"))
-    # sessions = relationship("MovieSession", back_populates="reservations")
-
-    def update(self, **kwargs):
-        for field, value in kwargs.items():
-            if value is not None:
-                setattr(self, field, value)
+# class Reservation(Base):
+#     __tablename__ = (
+#         "reservations"  # For help sqlalchemy to know what is the name of table later on
+#     )
+#
+#     id = Column(Integer, primary_key=True, index=True)
+#     title = Column(String, nullable=False)
+#     description = Column(String, nullable=False)
+#     priority = Column(Integer, nullable=False)
+#     complete = Column(Boolean, default=False)
+#     session_id = Column(Integer, ForeignKey("movie_sessions.id"))
+#     sessions = relationship("MovieSession", back_populates="reservations")
+#
+#     def update(self, **kwargs):
+#         for field, value in kwargs.items():
+#             if value is not None:
+#                 setattr(self, field, value)

@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./cinema_app.db"
 
