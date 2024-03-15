@@ -11,6 +11,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 app.include_router(rooms.router)
 
+
 @app.exception_handler(Exception)
 async def exception_handler(
     request: Request, exc: Exception

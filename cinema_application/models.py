@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
-from cinema_application.database import Base, relationship
+from cinema_application.database import Base
 
 
 class Admin(Base):
@@ -19,6 +19,7 @@ class Admin(Base):
             if value is not None:
                 setattr(self, field, value)
 
+
 class Room(Base):
     __tablename__ = "rooms"
 
@@ -31,6 +32,7 @@ class Room(Base):
         for field, value in kwargs.items():
             if value is not None:
                 setattr(self, field, value)
+
 
 class MovieSession(Base):
     __tablename__ = "movie_sessions"
@@ -47,6 +49,7 @@ class MovieSession(Base):
         for field, value in kwargs.items():
             if value is not None:
                 setattr(self, field, value)
+
 
 class Movie(Base):
     __tablename__ = "movies"

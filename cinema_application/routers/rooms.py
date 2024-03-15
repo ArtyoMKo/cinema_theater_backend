@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, status, Path
 from cinema_application.models import Room
 from cinema_application.database import get_db
 from cinema_application.exceptions import NotFoundException
+
 # from cinema_application.routers.auth import get_current_user
 
 router = APIRouter(prefix="/rooms", tags=["rooms"])
@@ -29,14 +30,8 @@ async def read_all(database: DbDependency):
 
 
 @router.get("/{room_id}", status_code=status.HTTP_200_OK)
-async def get_room_by_id(
-    database: DbDependency, room_id: int = Path(gt=0)
-):
-    todo_element = (
-        database.query(Room)
-        .filter(Room.id == room_id)
-        .first()
-    )
+async def get_room_by_id(database: DbDependency, room_id: int = Path(gt=0)):
+    todo_element = database.query(Room).filter(Room.id == room_id).first()
     if todo_element is None:
         raise NotFoundException
     return todo_element
@@ -45,7 +40,8 @@ async def get_room_by_id(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_todo(
     # user: UserDependency, database: DbDependency, todo_request: TodoRequest
-    database: DbDependency, room_request: RoomRequest
+    database: DbDependency,
+    room_request: RoomRequest,
 ):
     new_todo_element = Room(**room_request.model_dump())
 
@@ -59,11 +55,7 @@ async def update_room(
     room_request: RoomUpdate,
     room_id: int = Path(gt=0),
 ):
-    updatable_todo = (
-        database.query(Room)
-        .filter(Room.id == room_id)
-        .first()
-    )
+    updatable_todo = database.query(Room).filter(Room.id == room_id).first()
     if not updatable_todo:
         raise NotFoundException
 
@@ -74,14 +66,8 @@ async def update_room(
 
 
 @router.delete("/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(
-    database: DbDependency, room_id: int = Path(gt=0)
-):
-    deletable_todo = (
-        database.query(Room)
-        .filter(Room.id == room_id)
-        .first()
-    )
+async def delete_todo(database: DbDependency, room_id: int = Path(gt=0)):
+    deletable_todo = database.query(Room).filter(Room.id == room_id).first()
     if not deletable_todo:
         raise NotFoundException
     database.delete(deletable_todo)
