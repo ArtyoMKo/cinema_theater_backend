@@ -1,0 +1,14 @@
+pylint==2.16.2
+mypy==1.4.1
+black==23.7.0
+pytest==7.2.1
+pydantic==2.1.1
+fastapi~=0.100.1
+sqlalchemy~=2.0
+httpx~=0.24
+passlib[bcrypt]==1.7.4
+types-passlib~=1.7.7
+python-multipart==0.0.6
+python-jose[cryptography]~=3.3
+types-python-jose
+python-dotenv~=1.0
