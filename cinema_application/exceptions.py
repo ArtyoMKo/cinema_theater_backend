@@ -7,7 +7,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_404_NOT_FOUND
 
 
 @dataclass
-class ReservationNotFoundException(HTTPException):
+class NotFoundException(HTTPException):
     status_code: int = HTTP_404_NOT_FOUND
     detail: str = "Reservation not found"
 

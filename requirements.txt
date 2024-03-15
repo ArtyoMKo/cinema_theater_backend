@@ -12,3 +12,4 @@ python-multipart==0.0.9
 python-jose[cryptography]~=3.3
 types-python-jose
 python-dotenv~=1.0
+uvicorn~=0.28

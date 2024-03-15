@@ -3,11 +3,13 @@ from starlette.responses import JSONResponse
 from starlette.requests import Request
 
 from cinema_application.database import engine
+from cinema_application.routers import rooms
 from cinema_application import models
 
 app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine)
+app.include_router(rooms.router)
 
 @app.exception_handler(Exception)
 async def exception_handler(
