@@ -65,15 +65,10 @@ def override_get_db(monkeypatch):
 
 
 def test_create_room(client, override_get_db):
-    todo_data = {
-        "name": "Red",
-        "seats": 50
-    }
+    todo_data = {"name": "Red", "seats": 50}
     response = client.post(
         "/rooms",
-        headers={
-            "accept": "application/json"
-        },
+        headers={"accept": "application/json"},
         json=todo_data,
     )
     assert response.status_code == 201
@@ -82,34 +77,22 @@ def test_create_room(client, override_get_db):
 def test_read_all(client, override_get_db):
     response = client.get(
         "/rooms",
-        headers={
-            "accept": "application/json"
-        },
+        headers={"accept": "application/json"},
     )
     assert response.status_code == 200
     assert len(response.json()) == 1
-    assert response.json() == [
-        {
-            "id": 1,
-            "name": "Red",
-            "seats": 50
-        }
-    ]
+    assert response.json() == [{"id": 1, "name": "Red", "seats": 50}]
 
 
 def test_get_room_by_id(client, override_get_db):
     response = client.get(
         "/rooms/1",
-        headers={
-            "accept": "application/json"
-        },
+        headers={"accept": "application/json"},
     )
     assert response.status_code == 200
-    assert response.json() == {
-        "id": 1,
-        "name": "Red",
-        "seats": 50
-    }
+    assert response.json() == {"id": 1, "name": "Red", "seats": 50}
+
+
 #
 #
 # def test_update_todo(client, override_get_db, authenticate_user):
