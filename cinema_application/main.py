@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse
 from starlette.requests import Request
 
 from cinema_application.database import engine
-from cinema_application.routers import rooms, auth
+from cinema_application.routers import rooms, auth, movies
 from cinema_application import models
 
 app = FastAPI()
@@ -11,6 +11,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 app.include_router(rooms.router)
 app.include_router(auth.router)
+app.include_router(movies.router)
 
 
 @app.exception_handler(Exception)

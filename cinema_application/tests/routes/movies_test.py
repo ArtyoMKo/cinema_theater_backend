@@ -64,10 +64,10 @@ def test_create_user(client, override_get_db):
     assert response.status_code == 201
 
 
-def test_create_room(client, override_get_db, authenticate_user):
-    todo_data = {"name": "Red", "seats": 50}
+def test_create_movie(client, override_get_db, authenticate_user):
+    todo_data = {"name": "Dune 2", "duration": 180}
     response = client.post(
-        "/rooms",
+        "/movies",
         headers={
             "accept": "application/json",
             "Authorization": f"Bearer {authenticate_user}",
@@ -79,26 +79,26 @@ def test_create_room(client, override_get_db, authenticate_user):
 
 def test_read_all(client, override_get_db):
     response = client.get(
-        "/rooms",
+        "/movies",
         headers={"accept": "application/json"},
     )
     assert response.status_code == 200
     assert len(response.json()) == 1
-    assert response.json() == [{"id": 1, "name": "Red", "seats": 50}]
+    assert response.json() == [{"id": 1, "name": "Dune 2", "duration": 180}]
 
 
-def test_get_room_by_id(client, override_get_db):
+def test_get_movie_by_id(client, override_get_db):
     response = client.get(
-        "/rooms/1",
+        "/movies/1",
         headers={"accept": "application/json"},
     )
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "name": "Red", "seats": 50}
+    assert response.json() == {"id": 1, "name": "Dune 2", "duration": 180}
 
 
-def test_delete_todo(client, override_get_db, authenticate_user):
+def test_delete_movie(client, override_get_db, authenticate_user):
     response = client.delete(
-        "/rooms/1",
+        "/movies/1",
         headers={
             "accept": "application/json",
             "Authorization": f"Bearer {authenticate_user}",

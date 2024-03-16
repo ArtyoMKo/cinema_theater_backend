@@ -26,7 +26,7 @@ class CreateUserRequest(BaseModel):
     first_name: str
     last_name: str
     password: str
-    role: str
+    # role: str
 
 
 class Token(BaseModel):
@@ -82,8 +82,7 @@ def create_user(database: DbDependency, create_user_request: CreateUserRequest):
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
         hashed_password=bcrypt_context.hash(create_user_request.password),
-        role=create_user_request.role,
-        is_active=True,
+        # role=create_user_request.role,
     )
 
     database.add(create_user_model)
