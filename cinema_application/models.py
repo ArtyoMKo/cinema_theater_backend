@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from cinema_application.database import Base, relationship
 
 
-class Admin(Base):
+class Admins(Base):
     __tablename__ = "admins"
 
     id = Column(Integer, primary_key=True, index=True)
