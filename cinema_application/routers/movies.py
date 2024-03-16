@@ -1,8 +1,8 @@
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, status, Path
-from cinema_application.models import Movie
+from cinema_application.models import Movie, MovieSession
 from cinema_application.routers.auth import get_current_user
 from cinema_application.database import get_db
 from cinema_application.exceptions import NotFoundException
@@ -24,9 +24,23 @@ class MovieUpdate(BaseModel):
     duration: Optional[str] = None
 
 
+# class MoviesWithSessions(BaseModel):
+#     sessions: List[MovieSession] = []
+
+
 @router.get("/", status_code=status.HTTP_200_OK)
-async def read_all(database: DbDependency):
+async def all_movies(admin: UserDependency, database: DbDependency):
     return database.query(Movie).all()
+
+
+@router.get("/available_movies", status_code=status.HTTP_200_OK)
+async def movies_with_sessions(database: DbDependency):
+    return (
+        database.query(Movie)
+        .join(MovieSession, MovieSession.movie_id == Movie.id)
+        .distinct(Movie.id)
+        .all()
+    )
 
 
 # @router.get("/{room_id}", status_code=status.HTTP_200_OK)

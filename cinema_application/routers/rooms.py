@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, status, Path
-from cinema_application.models import Room
+from cinema_application.models import Room, MovieSession
 from cinema_application.routers.auth import get_current_user
 from cinema_application.database import get_db
 from cinema_application.exceptions import NotFoundException
@@ -25,8 +25,18 @@ class RoomUpdate(BaseModel):
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
-async def read_all(database: DbDependency):
+async def all_rooms(admin: UserDependency, database: DbDependency):
     return database.query(Room).all()
+
+
+@router.get("/available_rooms", status_code=status.HTTP_200_OK)
+async def rooms_with_sessions(database: DbDependency):
+    return (
+        database.query(Room)
+        .join(MovieSession, MovieSession.room_id == Room.id)
+        .distinct(Room.id)
+        .all()
+    )
 
 
 @router.get("/{room_id}", status_code=status.HTTP_200_OK)

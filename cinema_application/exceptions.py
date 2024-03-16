@@ -13,6 +13,12 @@ class NotFoundException(HTTPException):
 
 
 @dataclass
+class MovieOrRoomNotFoundException(HTTPException):
+    status_code: int = HTTP_404_NOT_FOUND
+    detail: str = "Room or Movie not found"
+
+
+@dataclass
 class AuthenticationFailed(HTTPException):
     status_code: int = HTTP_401_UNAUTHORIZED
     detail: str = "Authentication Failed"
