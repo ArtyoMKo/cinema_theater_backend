@@ -1,15 +1,48 @@
-# cinema-back-end
-todo
+# Cinema back-end application
 
 ***
 ## Task Description
-todo
+The assignment is about creating cinema’s application.
+There are different cinema rooms: for example, red, blue, green, etc.
+Different movies are shown in each room at the same time.
+The schedule is different for each room. Each movie has its name and poster.
+There are different available seats for each room. For example, consider row and seats 10 x 8.
+User can click on the seat and book it. After refreshing the page that seat should become unavailable
+during the period of the movie.
+It should work like this:
+There is list of rooms։
+1. User clicks on a room;
+2. User sees available movies (with title, date and time) for the selected room;
+3. User clicks on a movie, after which user sees available and not available seats for the selected
+movie.
+
+Optional Please consider there should be admin portal for managing mentioned data (CRUD).
+1. CRUD for rooms
+2. CRUD for movies
+Feel free to choose the fields of the CRUDs. Let me know if you need any additional information.
+
 ***
 
 # Project description
-```
-Todo
-```
+Project built with FastAPI framework. It is providing REST API and supposed to work with any front-end framework which 
+can camunicate with back-end REST API. 
+
+## Project design
+All schemas find [here](https://drive.google.com/file/d/1iL4Z97KCpndJmJWjzOTIHgV6RQWpLzcl/view?usp=sharing)
+
+### Project models
+Project have 4 models:
+![](C:\Users\artyo\Downloads\cinema_application_scheme.svg)
+- ROOMS: Rooms of cinema
+- MOVIES: Movies would have sessions
+- MOVIE_SESSIONS: Sessions of movies registered in cinema
+- RESERVATIONS: Reserved places per session
+
+### API structure
+
+![](C:\Users\artyo\Downloads\cinema_application_scheme_api.svg)
+
+### Project
 ***
 ### Steps for running service
 ***
@@ -19,17 +52,13 @@ If you have cloned this repository and created a virtual environment for it. You
 ``` bash
 pip3 install -r requirements.txt
 ```
-Or you can activate already created virtual environment by
-``` bash
-todo
-```
 
 ***
 # Usage
 ## Running services
 Run first (Client service)
 ``` bash
-python -m uvicorn main:app --reload
+python -m cinema_application.uvicorn main:app --reload
 ```
 Open ```http://127.0.0.1:8000/docs``` in a browser and test API locally
 
@@ -79,4 +108,6 @@ Personally, if you are using Pycharm-Pro I recommend use the function "Run Pytho
 will allow you to see which lines are not under coverage.
 
 ## Future Work
-- Add unit and integration tests (by mocking requests and databases)
+- Add more unit and integration tests (by mocking requests and databases)
+- Add more functionality for admins
+- Optimize database queries
