@@ -1,4 +1,4 @@
-# Cinema back-end application
+# Cinema theatre back-end application
 
 ***
 ## Task Description
