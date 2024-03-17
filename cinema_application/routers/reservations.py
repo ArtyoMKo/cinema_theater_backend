@@ -73,7 +73,7 @@ async def reservations_by(parent: ParentExam, parent_id: int, database: DbDepend
         database.query(Reservation)
         .join(MovieSession)
         .join(parent_object)
-        .filter(parent_object.id == parent_id)
+        .filter(parent_object.id == parent_id)  # type: ignore[attr-defined]
         .all()
     )
 

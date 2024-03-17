@@ -65,9 +65,9 @@ async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)
     data = database.query(MovieSession).filter(MovieSession.id == session_id).first()
     todo_element = {
         "session": data,
-        "room": data.room,
-        "movie": data.movie,
-        "reservations": data.reservations,
+        "room": data.room,  # type: ignore[union-attr]
+        "movie": data.movie,  # type: ignore[union-attr]
+        "reservations": data.reservations,  # type: ignore[union-attr]
     }
 
     if todo_element is None:
