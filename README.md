@@ -33,13 +33,16 @@ All schemas find [here](https://drive.google.com/file/d/1iL4Z97KCpndJmJWjzOTIHgV
 ### Project models
 Project have 4 models:
 ![](resources/cinema_application_scheme.svg)
-- ROOMS: Rooms of cinema
-- MOVIES: Movies would have sessions
+- ROOMS: Rooms of cinema theatre
+- MOVIES: Movies which would have sessions
 - MOVIE_SESSIONS: Sessions of movies registered in cinema
-- RESERVATIONS: Reserved places per session
+- RESERVATIONS: Reserved seats per session
 
 ### API structure
-
+Project contains two services - Front-end and Back-end. Back-end service built based on FastAPI framework and it provides all functionality
+for Front-end service. In schema you can find usage of API and possible Front-end solution design.
+API usage design splitted between steps which user need to perform for performing movie sessions registration and which admin need to perform 
+for registering movies, rooms, sessions etc. 
 ![](resources/cinema_application_scheme_api.svg)
 
 ### Project
