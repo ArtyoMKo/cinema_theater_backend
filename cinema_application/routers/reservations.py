@@ -35,7 +35,7 @@ async def all_reservations(admin: UserDependency, database: DbDependency):
     return database.query(Reservation).all()
 
 
-@router.get("/by_sessions/session_id={session_id}", status_code=status.HTTP_200_OK)
+@router.get("/by_sessions/{session_id}", status_code=status.HTTP_200_OK)
 async def session_reservations(session_id: int, database: DbDependency):
     return (
         database.query(Reservation)
