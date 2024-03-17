@@ -77,10 +77,13 @@ def test_create_room(client, override_get_db, authenticate_user):
     assert response.status_code == 201
 
 
-def test_read_all(client, override_get_db):
+def test_read_all(client, override_get_db, authenticate_user):
     response = client.get(
         "/rooms",
-        headers={"accept": "application/json"},
+        headers={
+            "accept": "application/json",
+            "Authorization": f"Bearer {authenticate_user}",
+        },
     )
     assert response.status_code == 200
     assert len(response.json()) == 1

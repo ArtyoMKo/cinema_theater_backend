@@ -65,7 +65,7 @@ def test_create_user(client, override_get_db):
 
 
 def test_create_movie(client, override_get_db, authenticate_user):
-    todo_data = {"name": "Dune 2", "duration": 180}
+    todo_data = {"name": "Dune 2", "duration": 180, "poster": "bytes"}
     response = client.post(
         "/movies",
         headers={
@@ -77,14 +77,17 @@ def test_create_movie(client, override_get_db, authenticate_user):
     assert response.status_code == 201
 
 
-def test_read_all(client, override_get_db):
+def test_read_all(client, override_get_db, authenticate_user):
     response = client.get(
         "/movies",
-        headers={"accept": "application/json"},
+        headers={
+            "accept": "application/json",
+            "Authorization": f"Bearer {authenticate_user}",
+        },
     )
     assert response.status_code == 200
     assert len(response.json()) == 1
-    assert response.json() == [{"id": 1, "name": "Dune 2", "duration": 180}]
+    assert response.json() == [{"id": 1, "name": "Dune 2", "duration": 180, "poster": "bytes"}]
 
 
 def test_get_movie_by_id(client, override_get_db):
@@ -93,7 +96,7 @@ def test_get_movie_by_id(client, override_get_db):
         headers={"accept": "application/json"},
     )
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "name": "Dune 2", "duration": 180}
+    assert response.json() == {"id": 1, "name": "Dune 2", "duration": 180, "poster": "bytes"}
 
 
 def test_delete_movie(client, override_get_db, authenticate_user):
