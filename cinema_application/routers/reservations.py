@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 from typing import Annotated, Optional
 from enum import Enum
 from sqlalchemy.orm import Session
@@ -31,8 +32,8 @@ class ReservationUpdate(BaseModel):
 
 
 class ParentExam(str, Enum):
-    movie = "movie"
-    room = "room"
+    MOVIE = "movie"
+    ROOM = "room"
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
@@ -50,30 +51,31 @@ async def session_reservations(session_id: int, database: DbDependency):
     )
 
 
-@router.get(
-    "/reservations/session_id={session_id}/seats", status_code=status.HTTP_200_OK
-)
-async def session_reservations(session_id: int, database: DbDependency):
-    result = (
-        database.query(Reservation)
-        .join(MovieSession, Reservation.session_id == MovieSession.id)
-        .filter(MovieSession.id == session_id)
-        .all()
-    )
-    return result
+# Todo: fix this method
+# @router.get(
+#     "/reservations/session_id={session_id}/seats", status_code=status.HTTP_200_OK
+# )
+# async def session_reservations(session_id: int, database: DbDependency):
+#     result = (
+#         database.query(Reservation)
+#         .join(MovieSession, Reservation.session_id == MovieSession.id)
+#         .filter(MovieSession.id == session_id)
+#         .all()
+#     )
+#     return result
 
 
 @router.get("/{parent}={parent_id}", status_code=status.HTTP_200_OK)
 async def reservations_by(parent: ParentExam, parent_id: int, database: DbDependency):
-    parent_object = Movie if parent == ParentExam.movie else Room
-    if parent == ParentExam.movie:
-        return (
-            database.query(Reservation)
-            .join(MovieSession)
-            .join(parent_object)
-            .filter(parent_object.id == parent_id)
-            .all()
-        )
+    parent_object = Movie if parent == ParentExam.MOVIE else Room
+    # if parent == ParentExam.movie:
+    return (
+        database.query(Reservation)
+        .join(MovieSession)
+        .join(parent_object)
+        .filter(parent_object.id == parent_id)
+        .all()
+    )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

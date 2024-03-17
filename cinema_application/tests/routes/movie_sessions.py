@@ -1,3 +1,5 @@
+# pylint: disable=redefined-outer-name
+# pylint: disable=unused-argument
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -30,7 +32,7 @@ def client():
 def override_get_db(monkeypatch):
     def mock_get_db():
         try:
-            db = TestingSessionLocal()
+            db = TestingSessionLocal()  # pylint: disable=invalid-name
             yield db
         finally:
             db.close()
@@ -108,6 +110,6 @@ def test_delete_movie(client, override_get_db, authenticate_user):
     # --- Negative
     response = client.delete(
         "/rooms/1",
-        headers={"accept": "application/json", "Authorization": f"Bearer wrong token"},
+        headers={"accept": "application/json", "Authorization": "Bearer wrong token"},
     )
     assert response.status_code == 401

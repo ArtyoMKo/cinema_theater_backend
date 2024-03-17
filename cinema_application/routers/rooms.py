@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 from typing import Annotated, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session

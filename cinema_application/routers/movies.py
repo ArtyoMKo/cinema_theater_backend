@@ -1,4 +1,5 @@
-from typing import Annotated, Optional, List
+# pylint: disable=unused-argument
+from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, status, Path
