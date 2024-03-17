@@ -32,7 +32,7 @@ All schemas find [here](https://drive.google.com/file/d/1iL4Z97KCpndJmJWjzOTIHgV
 
 ### Project models
 Project have 4 models:
-![](C:\Users\artyo\Downloads\cinema_application_scheme.svg)
+![](resources/cinema_application_scheme.svg)
 - ROOMS: Rooms of cinema
 - MOVIES: Movies would have sessions
 - MOVIE_SESSIONS: Sessions of movies registered in cinema
@@ -40,7 +40,7 @@ Project have 4 models:
 
 ### API structure
 
-![](C:\Users\artyo\Downloads\cinema_application_scheme_api.svg)
+![](resources/cinema_application_scheme_api.svg)
 
 ### Project
 ***
