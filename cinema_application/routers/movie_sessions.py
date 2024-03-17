@@ -89,7 +89,7 @@ async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)
 @router.get("/filtered/", status_code=status.HTTP_200_OK)
 # async def sessions_by(parent: ParentExam, parent_id: int, database: DbDependency):
 async def sessions_filtered_by(
-    database: DbDependency, movie_id: int = None, room_id: int = None
+    database: DbDependency, movie_id: int | None = None, room_id: int | None = None
 ):
     if not movie_id and not room_id:
         raise WrongParametersException
@@ -100,11 +100,11 @@ async def sessions_filtered_by(
             .filter(MovieSession.start_time > datetime.now())
             .all()
         )
-    elif movie_id:
+    if movie_id:
         return (
             database.query(MovieSession).filter(MovieSession.movie_id == movie_id).all()
         )
-    elif room_id:
+    if room_id:
         return (
             database.query(MovieSession).filter(MovieSession.room_id == room_id).all()
         )
