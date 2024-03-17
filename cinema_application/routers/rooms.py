@@ -1,4 +1,5 @@
 from typing import Annotated, Optional
+from datetime import datetime
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, status, Path
@@ -31,9 +32,13 @@ async def all_rooms(admin: UserDependency, database: DbDependency):
 
 @router.get("/available_rooms", status_code=status.HTTP_200_OK)
 async def rooms_with_sessions(database: DbDependency):
+    """
+    Example
+    """
     return (
         database.query(Room)
         .join(MovieSession, MovieSession.room_id == Room.id)
+        .filter(MovieSession.start_time > datetime.now())
         .distinct(Room.id)
         .all()
     )

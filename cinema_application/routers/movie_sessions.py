@@ -21,10 +21,12 @@ class MovieSessionRequest(BaseModel):
     start_time: str = Field(
         description="Please use '%d-%m-%Y %H:%M' format.",
         examples=["18-03-2024 12:05", "24-12-2021 21:05"],
+        pattern="^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$",
     )
     end_time: str = Field(
         description="Please use '%d-%m-%Y %H:%M' format.",
         examples=["18-03-2024 12:05", "24-12-2021 21:05"],
+        pattern="^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$",
     )
 
     movie_id: int = Field(gt=0)
@@ -59,11 +61,35 @@ async def upcoming_sessions(database: DbDependency):
 
 @router.get("/{session_id}", status_code=status.HTTP_200_OK)
 async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)):
-    todo_element = (
-        database.query(MovieSession).filter(MovieSession.id == session_id).first()
-    )
+    data = database.query(MovieSession).filter(MovieSession.id == session_id).first()
+    todo_element = {
+        "session": data,
+        "room": data.room,
+        "movie": data.movie,
+        "reservations": data.reservations,
+    }
+
     if todo_element is None:
         raise NotFoundException
+    return todo_element
+
+
+@router.get("/by_movie/{movie_id}", status_code=status.HTTP_200_OK)
+async def get_sessions_by_movie(database: DbDependency, movie_id: int = Path(gt=0)):
+    data = (
+        database.query(MovieSession)
+        .filter(MovieSession.movie_id == movie_id)
+        .filter(MovieSession.start_time > datetime.now())
+        .all()
+    )
+
+    if data is None:
+        raise NotFoundException
+
+    todo_element = {
+        "sessions": data,
+        "room": [item.room for item in data],
+    }
     return todo_element
 
 
