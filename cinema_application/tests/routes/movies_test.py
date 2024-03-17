@@ -87,7 +87,9 @@ def test_read_all(client, override_get_db, authenticate_user):
     )
     assert response.status_code == 200
     assert len(response.json()) == 1
-    assert response.json() == [{"id": 1, "name": "Dune 2", "duration": 180, "poster": "bytes"}]
+    assert response.json() == [
+        {"id": 1, "name": "Dune 2", "duration": 180, "poster": "bytes"}
+    ]
 
 
 def test_get_movie_by_id(client, override_get_db):
@@ -96,7 +98,12 @@ def test_get_movie_by_id(client, override_get_db):
         headers={"accept": "application/json"},
     )
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "name": "Dune 2", "duration": 180, "poster": "bytes"}
+    assert response.json() == {
+        "id": 1,
+        "name": "Dune 2",
+        "duration": 180,
+        "poster": "bytes",
+    }
 
 
 def test_delete_movie(client, override_get_db, authenticate_user):

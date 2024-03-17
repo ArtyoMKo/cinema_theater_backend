@@ -1,7 +1,8 @@
 # pylint: disable=unused-argument
 from typing import Annotated, Optional
+from enum import Enum
 from datetime import datetime
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel, Field, field_validator
 from fastapi import APIRouter, Depends, status, Path
 from cinema_application.models import Movie, MovieSession, Room
@@ -10,6 +11,7 @@ from cinema_application.database import get_db
 from cinema_application.exceptions import (
     NotFoundException,
     MovieOrRoomNotFoundException,
+    WrongParametersException,
 )
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -46,68 +48,82 @@ class MovieSessionUpdate(BaseModel):
     room_id: Optional[int] = None
 
 
+class ParentExam(str, Enum):
+    MOVIE = "movie"
+    ROOM = "room"
+
+
 @router.get("/", status_code=status.HTTP_200_OK)
 async def all_sessions(admin: UserDependency, database: DbDependency):
     return database.query(MovieSession).all()
 
 
-@router.get("/upcoming", status_code=status.HTTP_200_OK)
-async def upcoming_sessions(database: DbDependency):
-    return (
-        database.query(MovieSession)
-        .filter(MovieSession.start_time > datetime.now())
-        .all()
-    )
-
-
 @router.get("/{session_id}", status_code=status.HTTP_200_OK)
 async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)):
-    data = database.query(MovieSession).filter(MovieSession.id == session_id).first()
-    todo_element = {
-        "session": data,
-        "room": data.room,  # type: ignore[union-attr]
-        "movie": data.movie,  # type: ignore[union-attr]
-        "reservations": data.reservations,  # type: ignore[union-attr]
-    }
-
-    if todo_element is None:
-        raise NotFoundException
-    return todo_element
-
-
-@router.get("/by_movie/{movie_id}", status_code=status.HTTP_200_OK)
-async def get_sessions_by_movie(database: DbDependency, movie_id: int = Path(gt=0)):
     data = (
         database.query(MovieSession)
-        .filter(MovieSession.movie_id == movie_id)
-        .filter(MovieSession.start_time > datetime.now())
-        .all()
+        .options(
+            joinedload(MovieSession.movie),
+            joinedload(MovieSession.room),
+            joinedload(MovieSession.reservations),
+        )
+        .filter(MovieSession.id == session_id)
+        .first()
     )
 
     if data is None:
         raise NotFoundException
 
+    reserved_seats = [reservation.seat for reservation in data.reservations]
+    available_seats = [
+        seat for seat in range(1, data.room.seats + 1) if seat not in reserved_seats
+    ]
     todo_element = {
-        "sessions": data,
-        "room": [item.room for item in data],
+        "session": data,
+        "reserved_seats": reserved_seats,
+        "available_seats": available_seats,
     }
     return todo_element
 
 
+@router.get("/filtered/", status_code=status.HTTP_200_OK)
+# async def sessions_by(parent: ParentExam, parent_id: int, database: DbDependency):
+async def sessions_filtered_by(
+    database: DbDependency, movie_id: int = None, room_id: int = None
+):
+    if not movie_id and not room_id:
+        raise WrongParametersException
+    if movie_id and room_id:
+        return (
+            database.query(MovieSession)
+            .filter(MovieSession.movie_id == movie_id, MovieSession.room_id == room_id)
+            .filter(MovieSession.start_time > datetime.now())
+            .all()
+        )
+    elif movie_id:
+        return (
+            database.query(MovieSession).filter(MovieSession.movie_id == movie_id).all()
+        )
+    elif room_id:
+        return (
+            database.query(MovieSession).filter(MovieSession.room_id == room_id).all()
+        )
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_session(
-        admin: UserDependency,
-        database: DbDependency,
-        session_request: MovieSessionRequest,
+    admin: UserDependency,
+    database: DbDependency,
+    session_request: MovieSessionRequest,
 ):
     session_params = session_request.model_dump()
     if (
-            not database.query(Movie)
-                    .filter(Movie.id == session_params.get("movie_id"))
-                    .first()
-            or not database.query(Room)
-            .filter(Room.id == session_params.get("room_id"))
-            .first()
+        not database.query(Movie)
+        .filter(Movie.id == session_params.get("movie_id"))
+        .first()
+        or not database.query(Room)
+        .filter(Room.id == session_params.get("room_id"))
+        .first()
     ):
         raise MovieOrRoomNotFoundException
 
@@ -119,10 +135,10 @@ async def create_session(
 
 @router.put("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_session(
-        admin: UserDependency,
-        database: DbDependency,
-        session_request: MovieSessionUpdate,
-        session_id: int = Path(gt=0),
+    admin: UserDependency,
+    database: DbDependency,
+    session_request: MovieSessionUpdate,
+    session_id: int = Path(gt=0),
 ):
     updatable_todo = (
         database.query(MovieSession).filter(MovieSession.id == session_id).first()
@@ -133,16 +149,16 @@ async def update_session(
     session_params = session_request.model_dump(exclude_unset=True)
     if "movie_id" in session_params:
         if (
-                not database.query(Movie)
-                        .filter(Movie.id == session_params.get("movie_id"))
-                        .first()
+            not database.query(Movie)
+            .filter(Movie.id == session_params.get("movie_id"))
+            .first()
         ):
             raise MovieOrRoomNotFoundException
     if "room_id" in session_params:
         if (
-                not database.query(Room)
-                        .filter(Room.id == session_params.get("room_id"))
-                        .first()
+            not database.query(Room)
+            .filter(Room.id == session_params.get("room_id"))
+            .first()
         ):
             raise MovieOrRoomNotFoundException
 
@@ -154,7 +170,7 @@ async def update_session(
 
 @router.delete("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_session(
-        admin: UserDependency, database: DbDependency, session_id: int = Path(gt=0)
+    admin: UserDependency, database: DbDependency, session_id: int = Path(gt=0)
 ):
     deletable_todo = (
         database.query(MovieSession).filter(MovieSession.id == session_id).first()
