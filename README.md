@@ -40,13 +40,18 @@ Project have 4 models:
 
 ### API structure
 Project contains two services - Front-end and Back-end. Back-end service built based on FastAPI framework and it provides all functionality
-for Front-end service. In schema you can find usage of API and possible Front-end solution design.
-API usage design splitted between steps which user need to perform for performing movie sessions registration and which admin need to perform 
-for registering movies, rooms, sessions etc. 
+for Front-end service. In schema, you can find usage of API and possible Front-end solution design.
+API usage design split between steps which user need to perform for performing movie sessions registration and which admin need to perform 
+for registering movies, rooms, sessions etc.
+
 ![](resources/cinema_application_scheme_api.svg)
 
-### Project
-***
+**Developed more complicated service than required by task.**
+
+**Main differences**
+- Implemented more flexible opportunity for choosing movies and sessions
+- It is possible to register as many movies and sessions as needs
+
 ### Steps for running service
 ***
 ## Installation:
