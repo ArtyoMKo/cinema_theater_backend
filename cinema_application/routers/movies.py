@@ -15,7 +15,7 @@ UserDependency = Annotated[dict, Depends(get_current_user)]
 
 
 class MovieRequest(BaseModel):
-    name: str = Field(min_length=1, max_length=120, examples=['Dune 2'])
+    name: str = Field(min_length=1, max_length=120, examples=["Dune 2"])
     duration: Optional[int] = None
     poster: Optional[bytes] = None
 

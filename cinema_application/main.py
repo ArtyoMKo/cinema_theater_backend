@@ -17,9 +17,13 @@ app = FastAPI(
     description="""
     Cinema theatre back-end application.
     
-    You will be able to create admins, add/delete/update movies, rooms, movie sessions, manage session reservations,
+    Application created for managing cinema theatre movie sessions organization.
     
-    """
+    You will be able to create admins, add/delete/update movies, rooms, movie sessions, manage session reservations, 
+    etc. 
+    
+    Good luck !
+    """,
 )
 
 models.Base.metadata.create_all(bind=engine)
