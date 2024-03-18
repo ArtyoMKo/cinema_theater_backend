@@ -71,7 +71,7 @@ python -m cinema_application.uvicorn main:app --reload
 ```
 Open ```http://127.0.0.1:8000/docs``` in a browser and test API locally
 
-## Example of usage algorithm
+## Example of usage
 In cinema_app.db added some starting data (room, movie, admin, session)
 1. Run the project and open API documentation in the browser 
 2. Create superuser (admin) or use existing one (username: 'qwe', password: '123')
