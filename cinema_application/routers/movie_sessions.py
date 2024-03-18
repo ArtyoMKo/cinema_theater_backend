@@ -23,17 +23,17 @@ UserDependency = Annotated[dict, Depends(get_current_user)]
 class MovieSessionRequest(BaseModel):
     start_time: str = Field(
         description="Please use '%d-%m-%Y %H:%M' format.",
-        examples=["18-03-2024 12:05", "24-12-2021 21:05"],
+        examples=["18-03-2024 12:05"],
         pattern="^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$",  # pylint: disable=anomalous-backslash-in-string
     )
     end_time: str = Field(
         description="Please use '%d-%m-%Y %H:%M' format.",
-        examples=["18-03-2024 12:05", "24-12-2021 21:05"],
+        examples=["18-03-2024 15:05"],
         pattern="^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$",  # pylint: disable=anomalous-backslash-in-string
     )
 
-    movie_id: int = Field(gt=0)
-    room_id: int = Field(gt=0)
+    movie_id: int = Field(gt=0, examples=[1])
+    room_id: int = Field(gt=0, examples=[1])
 
     @field_validator("start_time", "end_time")
     @classmethod
@@ -60,6 +60,9 @@ async def all_sessions(admin: UserDependency, database: DbDependency):
 
 @router.get("/{session_id}", status_code=status.HTTP_200_OK)
 async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)):
+    """
+    Movie session's details. Session specifies by id.
+    """
     data = (
         database.query(MovieSession)
         .options(
@@ -87,10 +90,13 @@ async def get_session_by_id(database: DbDependency, session_id: int = Path(gt=0)
 
 
 @router.get("/filtered/", status_code=status.HTTP_200_OK)
-# async def sessions_by(parent: ParentExam, parent_id: int, database: DbDependency):
 async def sessions_filtered_by(
     database: DbDependency, movie_id: int | None = None, room_id: int | None = None
 ):
+    """
+    Movie sessions filtered by room id and movie id. At least one parameter must be specified.
+    Returning sessions which are not started yet at current time.
+    """
     if not movie_id and not room_id:
         raise WrongParametersException
     if movie_id and room_id:
@@ -116,6 +122,9 @@ async def create_session(
     database: DbDependency,
     session_request: MovieSessionRequest,
 ):
+    """
+    Create new movie session for opening reservations and movie screening.
+    """
     session_params = session_request.model_dump()
     if (
         not database.query(Movie)

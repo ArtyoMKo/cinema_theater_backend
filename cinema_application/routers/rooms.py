@@ -34,7 +34,8 @@ async def all_rooms(admin: UserDependency, database: DbDependency):
 @router.get("/available_rooms", status_code=status.HTTP_200_OK)
 async def rooms_with_sessions(database: DbDependency):
     """
-    Example
+    Cinema theatre rooms with active sessions.
+    Active sessions are sessions which are not started yet at current time.
     """
     return (
         database.query(Room)
@@ -59,6 +60,9 @@ async def create_room(
     database: DbDependency,
     room_request: RoomRequest,
 ):
+    """
+    Create new room of cinema theatre.
+    """
     new_todo_element = Room(**room_request.model_dump())
 
     database.add(new_todo_element)

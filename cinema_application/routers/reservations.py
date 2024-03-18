@@ -37,6 +37,9 @@ async def all_reservations(admin: UserDependency, database: DbDependency):
 
 @router.get("/by_sessions/{session_id}", status_code=status.HTTP_200_OK)
 async def session_reservations(session_id: int, database: DbDependency):
+    """
+    Reservations of custom movie session.
+    """
     return (
         database.query(Reservation)
         .join(MovieSession)
@@ -50,6 +53,10 @@ async def create_reservation(
     database: DbDependency,
     reservation_request: ReservationRequest,
 ):
+    """
+    Create reservation for participating movie session.
+    Reservation can be created for one person - one seat.
+    """
     reservation_params = reservation_request.model_dump()
 
     if (

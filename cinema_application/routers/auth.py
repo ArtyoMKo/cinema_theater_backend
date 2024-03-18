@@ -76,6 +76,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_user(database: DbDependency, create_user_request: CreateUserRequest):
+    """
+    Create new superuser (admin) account.
+    Superuser account needs for managing theatre rooms, movies, movie sessions.
+    """
     create_user_model = Admins(
         email=create_user_request.email,
         username=create_user_request.username,

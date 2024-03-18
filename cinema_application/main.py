@@ -12,7 +12,15 @@ from cinema_application.database import engine
 from cinema_application.routers import rooms, auth, movies, movie_sessions, reservations
 from cinema_application import models
 
-app = FastAPI()
+app = FastAPI(
+    title="Cinema theatre back-end application",
+    description="""
+    Cinema theatre back-end application.
+    
+    You will be able to create admins, add/delete/update movies, rooms, movie sessions, manage session reservations,
+    
+    """
+)
 
 models.Base.metadata.create_all(bind=engine)
 app.include_router(rooms.router)
